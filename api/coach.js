@@ -107,7 +107,7 @@ return send(res, 400, {
       body: JSON.stringify({
         model: process.env.OPENAI_MODEL || 'gpt-5-mini',
         input,
-        max_output_tokens: 1200,
+        max_output_tokens: 2500,
         store: false
       })
     });
