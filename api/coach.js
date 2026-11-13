@@ -23,9 +23,22 @@ module.exports = async function handler(req, res) {
   }
 
   if (!process.env.OPENAI_API_KEY) {
-    return send(res, 503, {
-      error: 'The AI coach is not configured yet. Please contact the site owner.'
-    });
+    console.error('Invalid coach request:', {
+  hasBody: !!body,
+  messagesIsArray: Array.isArray(body?.messages),
+  messageCount: Array.isArray(body?.messages) ? body.messages.length : 0,
+  messages: Array.isArray(body?.messages)
+    ? body.messages.map(m => ({
+        role: m?.role,
+        contentType: typeof m?.content,
+        contentLength: typeof m?.content === 'string' ? m.content.length : null
+      }))
+    : []
+});
+
+return send(res, 400, {
+  error: 'Invalid message format. Please try again.'
+});
   }
 
   const ip = (req.headers['x-forwarded-for'] || 'unknown')
